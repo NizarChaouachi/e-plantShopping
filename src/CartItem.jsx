@@ -6,30 +6,35 @@ import './CartItem.css';
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
-
-  // Calculate total amount for all products in the cart
+  console.log('Cart items:', cart);
   const calculateTotalAmount = () => {
- 
+    return cart.reduce((accumulator, item) => {
+      return accumulator + item.quantity * parseFloat(item.cost.replace('$', ''));
+    }, 0).toFixed(2);
   };
 
   const handleContinueShopping = (e) => {
-   
+    onContinueShopping(e);
   };
+// Corrected handleRemove to pass item as payload
+const handleRemove = (item) => {
+  dispatch(removeItem(item.name ));
+};
+
+// When incrementing or decrementing, ensure you pass the full item object with updated quantity
+const handleIncrement = (item) => {
+  dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+};
+
+const handleDecrement = (item) => {
+  if (item.quantity > 1) {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+  } 
+};
 
 
-
-  const handleIncrement = (item) => {
-  };
-
-  const handleDecrement = (item) => {
-   
-  };
-
-  const handleRemove = (item) => {
-  };
-
-  // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    return (parseFloat(item.cost.replace('$', '')) * item.quantity).toFixed(2);
   };
 
   return (
@@ -64,5 +69,3 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
 export default CartItem;
-
-
